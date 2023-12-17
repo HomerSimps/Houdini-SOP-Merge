@@ -10,11 +10,11 @@
 #include <PRM/PRM_Include.h>
 #include <UT/UT_DSOVersion.h>
 #include <SYS/SYS_Math.h>
-#include <iostream>
 #include <GA/GA_Range.h>
-#include <CVEX/CVEX_Context.h>
-#include <CVEX/CVEX_Function.h>
-#include <PRM/PRM_DialogScript.h>
+#include <iostream>
+
+
+
 
 using namespace HDK_Sample;
 

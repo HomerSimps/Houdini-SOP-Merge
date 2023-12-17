@@ -23,9 +23,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *----------------------------------------------------------------------------
- * CPPWave SOP
+ *
  */
-
 
 #ifndef __SOP_Merge_s_h__
 #define __SOP_Merge_s_h__
