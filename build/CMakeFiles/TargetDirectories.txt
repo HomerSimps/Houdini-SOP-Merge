@@ -1,0 +1,3 @@
+/media/mehrroz/New Volume/C++/HDK/SOP/SOP_MergeComilebel/build/CMakeFiles/SOP_Merge.dir
+/media/mehrroz/New Volume/C++/HDK/SOP/SOP_MergeComilebel/build/CMakeFiles/edit_cache.dir
+/media/mehrroz/New Volume/C++/HDK/SOP/SOP_MergeComilebel/build/CMakeFiles/rebuild_cache.dir
