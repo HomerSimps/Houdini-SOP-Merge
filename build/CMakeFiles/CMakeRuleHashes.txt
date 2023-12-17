@@ -1,2 +1,0 @@
-# Hashes of file build rules.
-8ab23fbc59d748097a8eba48d6befdf9 SOP_MergeS.proto.h
