@@ -49,8 +49,7 @@ namespace HDK_Sample {
     };
 
 
-/// Pure C++ implementation of @ref SOP_HOMWave
-/// @see SOP_HOMWave, vex_wave(), @ref HOM/SOP_HOMWave.py
+
 class SOP_Merge_s : public SOP_Node
 {
 public:
@@ -64,10 +63,7 @@ public:
 protected:
     OP_ERROR cookMySop(OP_Context &context) override;
 private:
-/*
-    int getDandROpsEqual() override;
-    int updateDandROpsEqual(int = 1) override {return getDandROpsEqual(); }
-*/
+
     int GET_NUMBER_OF_ATTRIB () { return evalInt("numAttribs",0,0.0f); }
     void setNUMAttribs(int num_attribs){
         setInt("numAttribs",0,0.0f,num_attribs);
@@ -76,33 +72,18 @@ private:
         return evalStringInst("name_#",&i,str,0,t);
     }
 
-    void SET_NAME(UT_String &str,CH_StringMeaning meaning,int i,fpreal t){
-        setStringInst(str,meaning,"name_#",&i,0,t);
-    }
-
+ 
     int GET_CLASS(int i){
         return evalIntInst("class_#",&i,0,0.0f);
     }
-    void SET_CLASS(int i,int val){
-        setIntInst(val,"class_#",&i,0,0.0f);
-
-    }
-
     int GET_TYPE(int i){
         return evalIntInst("type_#",&i,0,0.0f);
     }
-    void SET_TYPE(int i,int val){
-        setIntInst(val,"type_#",&i,0,0.0f);
-
-    }
-
+   
     void GET_PREFIX(UT_String &str,int i,fpreal t){
         return evalStringInst("str_prefix_#",&i,str,0,t);
     }
 
-    void SET_PREFIX(UT_String &str,CH_StringMeaning meaning,int i,fpreal t){
-        setStringInst(str,meaning,"str_prefix_#",&i,0,t);
-    }
 
 
     

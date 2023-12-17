@@ -22,8 +22,8 @@ void
 newSopOperator(OP_OperatorTable *table)
 {
      table->addOperator(new OP_Operator(
-        "cpp_merge",
-        "CPP Merge",
+        "merge_wca",
+        "Merge WCA",
         SOP_Merge_s::myConstructor,
         SOP_Merge_s::myTemplateList,
         0,
@@ -52,34 +52,32 @@ static PRM_Name TypeParmNames[] = {
 
 
 
-
+// Creatig Parms
 static PRM_ChoiceList sopClassMenu(PRM_CHOICELIST_SINGLE,classParmNames);
 static PRM_ChoiceList sopTypeMenu(PRM_CHOICELIST_SINGLE,TypeParmNames);
 
 static PRM_Default    sopClassDefult(SOP_CLASS_POINT);
 static PRM_Default    sopTypeDefult(SOP_TYPE_INT);
 static PRM_Default    sopAttribNameDef(0,"attribute#");
-static PRM_Default    sopPrefixbNameDef(0,"prefix#_");
+static PRM_Default    sopPrefixbNameDef(0,"prefix_");
 static PRM_Name menuNames[] = 
 {
     PRM_Name("numAttribs","Number of Attributes"),
     PRM_Name("name_#","Name"),
     PRM_Name("class_#","Class"),
-    PRM_Name("type_#","Type"),    
-    PRM_Name("str_prefix_#","String Prefix"),
+    PRM_Name("type_#","Type"),        
+    PRM_Name("str_prefix_#","String Prefix"),    
     PRM_Name(0)
+
 };
 
 static PRM_Template multiParmTemp[] = 
 {
     PRM_Template(PRM_STRING,1,&menuNames[1],&sopAttribNameDef),
     PRM_Template(PRM_ORD,1,&menuNames[2],&sopClassDefult,&sopClassMenu),
-    PRM_Template(PRM_ORD,1,&menuNames[3],&sopTypeDefult,&sopTypeMenu),
-    
-    PRM_Template(PRM_STRING,1,&menuNames[4],&sopPrefixbNameDef),
-    PRM_Template()
-
-    
+    PRM_Template(PRM_ORD,1,&menuNames[3],&sopTypeDefult,&sopTypeMenu),        
+    PRM_Template(PRM_STRING,1,&menuNames[4],&sopPrefixbNameDef),    
+    PRM_Template()    
 };
 
 
@@ -109,6 +107,8 @@ SOP_Merge_s::~SOP_Merge_s()
 {
 }
 
+
+//Changeing Parm Flags
 bool SOP_Merge_s::updateParmsFlags() {
 
     bool changed;
@@ -134,12 +134,10 @@ SOP_Merge_s::cookMySop(OP_Context &context)
     fpreal t = context.getTime();
 
     int number_of_Inputs = nInputs();
-    //std::cout<<"number_of_Inputs"<<number_of_Inputs<<"\n";
+    
     bool cpoiedfirst = false;
     bool cpoiedlast =  false;
-
-
-    CVEX_Context ctx;
+      
     
     for (int n = 0; n < number_of_Inputs;++n) {
         
@@ -170,32 +168,74 @@ SOP_Merge_s::cookMySop(OP_Context &context)
 
             UT_String attribName;
             GET_NAME(attribName,nat,t);
-            GA_Attribute *attrib;
+
+            UT_String ParmPrefix;
+
+            GA_RWHandleI attribINT;
+            GA_RWHandleF attribFloat;
+            GA_RWHandleS attribString;
+
             switch (GET_TYPE((nat)))
             {
+            //Crate Attrib for INT     
             case SOP_TYPE_INT:
 
-                attrib = blanks_gdp.findIntTuple(attribowner,attribName,-1,-1);
-                if (!attrib)
-                {   
-                    attrib = blanks_gdp.addIntTuple(attribowner,attribName,1,GA_Defaults(n));
-                    std::cout<<"Attrib Not Found Create New One"<<"\n";
+                attribINT = GA_RWHandleI(blanks_gdp.findIntTuple(attribowner,attribName,-1,-1));
+                if (attribINT.isInvalid())
+                {                       
+                    attribINT = blanks_gdp.addIntTuple(attribowner,attribName,1,GA_Defaults(n));                   
+                  
                 }
-                if (!attrib){
+
+                if (attribINT.isInvalid()){
                     UT_WorkBuffer buf;
-                    buf.sprintf("Failed to create array attributes \"%s\"",(const char*) attribName);
-                }
-                break;
-            case SOP_TYPE_FLOAT:
-                blanks_gdp.addFloatTuple(attribowner,attribName,1,GA_Defaults(static_cast<fpreal>(n)));
-            
-                break;
-            case SOP_TYPE_STRING:
-                    blanks_gdp.addStringTuple(attribowner,attribName,1);
+                    buf.sprintf("Failed to create Int attributes \"%s\"",(const char*) attribName);
                     
+                }
+
+                break;
+            //Crate Attrib for Float 
+            case SOP_TYPE_FLOAT:
+
+                attribFloat = GA_RWHandleF(blanks_gdp.findIntTuple(attribowner,attribName,-1,-1));
+                if (attribFloat.isInvalid()) {                       
+                    attribFloat = blanks_gdp.addFloatTuple(attribowner,attribName,1,GA_Defaults(static_cast<fpreal>(n)));           
+                }
+
+                if (attribFloat.isInvalid()) {
+                    UT_WorkBuffer buf;
+                    buf.sprintf("Failed to create Float attributes \"%s\"",(const char*) attribName);    
+               
+                }             
+                        
+                break;
+            //Crate Attrib for String 
+            case SOP_TYPE_STRING:
+
+                    attribString = GA_RWHandleS(blanks_gdp.findStringTuple(attribowner,attribName,-1,-1));
+                    if(attribString.isInvalid()){   
+                        attribString = GA_RWHandleS(blanks_gdp.addStringTuple(attribowner,attribName,1));
+                    }
+                    if(attribString.isInvalid()){   
+                            UT_WorkBuffer buf;
+                            buf.sprintf("Failed to create string attributes \"%s\"",(const char*) attribName);    
+                        
+                    }
+                    
+                    GET_PREFIX(ParmPrefix,nat,t);                    
+                    for (int  i= 0; i <blanks_gdp.getNumPoints();++i ) {                        
+                        attribString.set(blanks_gdp.pointOffset(i),ParmPrefix.c_str() + std::to_string(n));
+                    }
+
                 break;
             
             }
+            //bump attribs
+
+            attribINT.bumpDataId();
+            attribFloat.bumpDataId();
+            attribString.bumpDataId();
+
         }
         
         
@@ -219,11 +259,14 @@ SOP_Merge_s::cookMySop(OP_Context &context)
         GA_IndexMap::Marker primmarker(gdp->getPrimitiveMap());
 
         gdp->copy(blanks_gdp,copymethod,true,false,GA_DATA_ID_CLONE);
+        
         blanks_gdp.clearAndDestroy();
 
+        
 
     }
-
+    
+        
     if (!cpoiedfirst){
         gdp->clearAndDestroy();
 
@@ -233,7 +276,7 @@ SOP_Merge_s::cookMySop(OP_Context &context)
         gdp->copy(blank_gdp,GEO_COPY_END,true,false,GA_DATA_ID_CLONE);
   
     }
-
+    
     
     return error();
 }
