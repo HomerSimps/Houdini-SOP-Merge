@@ -67,8 +67,8 @@ static const char *theDsFile = R"THEDSFILE(
             type    ordinal
             default { "1" }     
             menu    {
-                "float" "Float"
                 "int"   "Integer"
+                "float" "Float"
                 "string"    "String"                  
             }  
             
